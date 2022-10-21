@@ -1,0 +1,70 @@
+---
+title: "In-class assignment"
+author: "Sinan Ocaktan"
+date: "`r format(Sys.time(), '%d %B %y')`"
+---
+
+```{r include = FALSE}
+library(tidyverse) 
+library(lubridate)
+library(nycflights13)
+library(ggplot2)
+library(knitr)
+
+df <- planes
+
+```
+
+## NYC Flights
+Here we can take a look at our dataset.
+
+```{r}
+
+kable(head(df))
+
+```
+
+
+
+### Part 1
+#### Calculation
+
+We can calculate the mean seat number on flights changing by the year and visualize them on a plot. We filter out older than 1985 to get more stable results.
+
+```{r}
+
+seats <- df %>% group_by(year) %>% dplyr::summarize(Mean = mean(seats),) %>% filter(year > 1985)
+seats[order(seats$year),]
+```
+
+#### Visualization
+
+```{r}
+
+ggplot(data=seats,aes(x=year,y=Mean)) +
+  geom_line()
+
+```
+In the early 2000s, mean seat numbers decreased significantly. **Note that y-axis does not start from zero**
+
+
+### Part 2
+#### Calculation
+
+We can calculate the change in the preference of manufacturors by the year.
+
+
+```{r}
+
+man = df %>% count(manufacturer, year, sort = TRUE) %>% filter(n > 10)
+man
+```
+#### Visualization
+
+```{r}
+
+ggplot(data=man,aes(x=year,y=n,color=manufacturer)) +
+  geom_line()
+
+```
+We can see the popularity of the manufacturers changing by the year.
